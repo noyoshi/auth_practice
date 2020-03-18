@@ -1,0 +1,25 @@
+<link href="/index.css" type="text/css" rel="stylesheet" />
+<script>
+  function submit() {
+    const data = document.getElementById("input").value;
+    console.log(data);
+    fetch("http://127.0.0.1:3000/puzzle/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        data: data
+      })
+    });
+  }
+</script>
+<a href="/home">Leaderboard</a>
+<a href="/">Home?</a>
+Puzzling puzzle is hard <% if (!user) { %>
+<h2>Welcome! Please log in. <a href="/auth/github">Login with GitHub</a></h2>
+<% } else { %>
+<h2>Hello, <%= user.displayName %>.</h2>
+<input id="input" type="text" />
+<button onclick="submit()">Submit</button>
+<% } %>

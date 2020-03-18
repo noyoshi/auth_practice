@@ -7,6 +7,11 @@ var passport = require("passport");
 var GitHubStrategy = require("passport-github2").Strategy;
 var partials = require("express-partials");
 
+var app = express();
+var bodyParser = require("body-parser");
+
+var jsonParser = bodyParser.json();
+
 // Passport session setup.
 //   To support persistent login sessions, Passport needs to be able to
 //   serialize users into and deserialize users out of the session.  Typically,
@@ -42,10 +47,9 @@ passport.use(
   )
 );
 
-var app = express();
-
 // The order of these things is important... nice
 app.set("views", __dirname + "/views");
+app.use(express.static(__dirname + "/static"));
 app.set("view engine", "ejs");
 app.use(partials());
 // Why?
@@ -55,10 +59,39 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", function(req, res) {
-  console.log(req.user);
+  //   console.log(req.user);
+  // get the data associated with the user?
+
   res.render("index", { user: req.user });
+});
+
+app.get("/home", function(req, res) {
+  const sorter = (a, b) => {
+    return b.points - a.points;
+  };
+
+  // TODO load this from an external data store?
+  const data = [
+    { name: "noyoshi", points: 1000 },
+    { name: "Student069", points: 100 }
+  ];
+
+  data.sort(sorter);
+  console.log(req.user);
+
+  const userid = req.user ? req.user.id : 0;
+  const username = req.user ? req.user.username : "";
+  console.log(username);
+
+  res.render("home", {
+    data: data,
+    userid: userid,
+    username: username
+  });
 });
 
 app.get(
@@ -69,6 +102,18 @@ app.get(
     // function will not be called.
   }
 );
+
+app.get("/puzzle", function(req, res) {
+  console.log(req.user);
+  // get the data associated with the user?
+
+  res.render("puzzle", { user: req.user });
+});
+
+app.post("/puzzle/submit", jsonParser, function(req, res) {
+  console.log(req.body);
+  res.redirect("/");
+});
 
 app.get(
   "/github/callback",

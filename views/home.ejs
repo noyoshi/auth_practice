@@ -1,0 +1,22 @@
+<link href="/index.css" type="text/css" rel="stylesheet" />
+<a href="/">Go back</a>
+<div class="container">
+  <div class="leaderboard">
+    <table style="width:100%">
+      <tr>
+        <th>Name</th>
+        <th>Points</th>
+      </tr>
+      <% for(var i=0; i < data.length; i++) { %>
+      <tr>
+        <% if (username === data[i].name) {%>
+        <td style="font-weight: bold"><%= data[i].name %> (That's you!)</td>
+        <% } else { %>
+        <td><%= data[i].name %></td>
+        <% } %>
+        <td><%= data[i].points %></td>
+      </tr>
+      <% } %>
+    </table>
+  </div>
+</div>
